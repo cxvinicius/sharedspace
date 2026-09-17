@@ -1,0 +1,8 @@
+from enum import Enum
+
+
+class SessionStatus(str, Enum):
+    ACTIVE = "ACTIVE"
+    CONFIRMATION_PENDING = "CONFIRMATION_PENDING"
+    COMPLETED = "COMPLETED"
+    AUTO_TERMINATED = "AUTO_TERMINATED"
