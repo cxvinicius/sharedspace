@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: sharedspace-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sharedspace
+      POSTGRES_USER: sharedspace
+      POSTGRES_PASSWORD: sharedspace
+    ports:
+      - "5432:5432"
+    volumes:
+      - sharedspace_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  sharedspace_postgres_data:
