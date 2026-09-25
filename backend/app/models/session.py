@@ -11,5 +11,6 @@ class Session:
     space_id: UUID
     status: SessionStatus
     started_at: datetime
+    expires_at: datetime
     confirmation_requested_at: datetime | None
     ended_at: datetime | None
