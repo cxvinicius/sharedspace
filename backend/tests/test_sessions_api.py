@@ -222,3 +222,75 @@ def test_capacity_cannot_be_exceeded(client, test_space):
 
     assert response.status_code == 409
     assert response.json()["detail"] == "Space capacity has been reached."
+
+
+def test_occupancy_is_zero_when_space_is_empty(client, test_space):
+    response = client.get(f"/spaces/{test_space}/occupancy")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "space_id": str(test_space),
+        "capacity": 5,
+        "occupied": 0,
+        "available": 5,
+    }
+
+
+def test_occupancy_counts_active_sessions(client, test_space):
+    for _ in range(3):
+        response = client.post(f"/spaces/{test_space}/sessions")
+        assert response.status_code == 201
+
+    response = client.get(f"/spaces/{test_space}/occupancy")
+
+    assert response.status_code == 200
+    assert response.json()["capacity"] == 5
+    assert response.json()["occupied"] == 3
+    assert response.json()["available"] == 2
+
+
+def test_occupancy_includes_confirmation_pending_sessions(
+    client,
+    test_space,
+):
+    check_in = client.post(f"/spaces/{test_space}/sessions")
+    session_id = UUID(check_in.json()["id"])
+
+    db = SessionLocal()
+
+    try:
+        session = db.get(SessionModel, session_id)
+        session.status = SessionStatus.CONFIRMATION_PENDING.value
+        db.commit()
+    finally:
+        db.close()
+
+    response = client.get(f"/spaces/{test_space}/occupancy")
+
+    assert response.status_code == 200
+    assert response.json()["occupied"] == 1
+    assert response.json()["available"] == 4
+
+
+def test_occupancy_reports_full_capacity(client, test_space):
+    for _ in range(5):
+        response = client.post(f"/spaces/{test_space}/sessions")
+        assert response.status_code == 201
+
+    response = client.get(f"/spaces/{test_space}/occupancy")
+
+    assert response.status_code == 200
+    assert response.json()["capacity"] == 5
+    assert response.json()["occupied"] == 5
+    assert response.json()["available"] == 0
+
+
+def test_occupancy_returns_404_for_missing_space(client):
+    missing_space_id = uuid4()
+
+    response = client.get(
+        f"/spaces/{missing_space_id}/occupancy"
+    )
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Space not found."
