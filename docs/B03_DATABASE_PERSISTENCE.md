@@ -1,11 +1,11 @@
 # B03 — Database Persistence
 
-## 🎯 Objetivo
+##  Objetivo
 Implementar a camada de persistência do **SharedSpace**, conectando os modelos de domínio a um banco **PostgreSQL** através do **SQLAlchemy** e **Alembic**.
 
 ---
 
-## 💡 Estratégia
+##  Estratégia
 * **Separação de Conceitos:** A B03 mantém a separação entre domínio e persistência estabelecida na B02.
 * **Modelagem:** Os modelos de domínio continuam utilizando `dataclasses`, enquanto os modelos de persistência utilizam `SQLAlchemy`.
 * **Ambiente:** O PostgreSQL é executado em um container Docker, garantindo um ambiente de desenvolvimento reproduzível.
@@ -13,7 +13,7 @@ Implementar a camada de persistência do **SharedSpace**, conectando os modelos 
 
 ---
 
-## 🛠️ Infraestrutura
+##  Infraestrutura
 
 O **PostgreSQL** foi configurado através do Docker Compose com os seguintes parâmetros:
 
@@ -29,7 +29,7 @@ O **PostgreSQL** foi configurado através do Docker Compose com os seguintes par
 
 ---
 
-## 🗂️ Persistência
+## Persistência
 
 A camada de persistência foi estritamente separada do domínio dentro da estrutura de diretórios:
 
@@ -51,7 +51,7 @@ Os modelos de persistência representam as entidades `SpaceModel`, `SessionModel
 
 ---
 
-## 📊 Tabelas e Atributos
+## Tabelas e Atributos
 
 ### 1. `spaces`
 Representa os espaços monitorados pelo SharedSpace.
@@ -76,7 +76,7 @@ Representa os eventos relacionados ao ciclo de vida de uma sessão.
 * `type`: str
 * `occurred_at`: datetime
 
-### 🔗 Relacionamentos e Chaves Estrangeiras
+###  Relacionamentos e Chaves Estrangeiras
 
 ```text
 SPACE
@@ -91,7 +91,7 @@ SPACE
 
 ---
 
-## 🚀 Migrations
+## Migrations
 
 O Alembic foi configurado para controlar a evolução do schema do banco.
 
@@ -100,7 +100,7 @@ O Alembic foi configurado para controlar a evolução do schema do banco.
 
 ---
 
-## ✅ Validação
+##  Validação
 
 1. A conexão entre aplicação e PostgreSQL foi validada através do SQLAlchemy.
 2. A migration foi aplicada com sucesso utilizando o comando:
@@ -111,7 +111,7 @@ O Alembic foi configurado para controlar a evolução do schema do banco.
 
 ---
 
-## 🏆 Resultado
+##  Resultado
 
 A B03 estabelece a persistência do SharedSpace sem acoplar o domínio diretamente ao banco de dados, resultando no seguinte fluxo arquitetural:
 
